@@ -21,9 +21,6 @@ export default function App() {
   const [userId, setUserId] = useState<string | null>(null);
   const [loginName, setLoginName] = useState('');
   const [loginEmail, setLoginEmail] = useState('');
-  const [loginPassword, setLoginPassword] = useState(() => {
-    return localStorage.getItem('misscarr_password') || '';
-  });
   const [showPassword, setShowPassword] = useState(false);
 
   // Auth form state
@@ -237,39 +234,33 @@ export default function App() {
   };
 
   const handleSendReminder = async (policy: InsurancePolicy) => {
-    if (!policy.clientEmail) {
-      toast.error("Aucune adresse email définie pour ce client.");
+    if (!loginEmail) {
+      toast.error("Impossible de déterminer votre adresse email.");
       return;
     }
-    if (!loginPassword) {
-      toast.error("Veuillez configurer votre mot de passe d'application dans les paramètres.");
-      setActiveTab('settings');
-      return;
-    }
-    
-    const loadingToast = toast.loading("Envoi de l'email en cours...");
+
+    const loadingToast = toast.loading("Envoi du rappel en cours...");
+    const daysLeft = differenceInDays(parseISO(policy.endDate), startOfDay(new Date()));
     try {
       const response = await fetch('/api/send-reminder', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          to: policy.clientEmail,
-          subject: `Rappel : Expiration de l'assurance pour ${policy.carBrand} ${policy.carModel}`,
-          text: `Bonjour ${policy.ownerName},\n\nCeci est un rappel automatique. L'assurance de votre véhicule ${policy.carBrand} ${policy.carModel} (Plaque: ${policy.licensePlate}) expire le ${format(parseISO(policy.endDate), 'dd/MM/yyyy')}.\n\nMerci de faire le nécessaire pour la renouveler.\n\nCordialement,\nMissCarr`,
-          userEmail: loginEmail,
-          userPassword: loginPassword
+          to: loginEmail,
+          subject: `[MissCarr] Rappel : Le contrat de ${policy.ownerName} expire ${daysLeft <= 0 ? "aujourd'hui" : `dans ${daysLeft} jour(s)`}`,
+          text: `Bonjour,\n\nCeci est un rappel automatique de MissCarr.\n\nLe contrat d'assurance suivant ${daysLeft <= 0 ? 'a expiré' : `expire dans ${daysLeft} jour(s)`} :\n\n- Client : ${policy.ownerName}\n- Véhicule : ${policy.carBrand} ${policy.carModel}\n- Plaque : ${policy.licensePlate}\n- Date d'expiration : ${format(parseISO(policy.endDate), 'dd/MM/yyyy')}\n${policy.clientEmail ? `- Email du client : ${policy.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMissCarr`
         })
       });
-      
+
       const data = await response.json();
       if (response.ok) {
-        toast.success("Email envoyé avec succès !", { id: loadingToast });
+        toast.success("Rappel envoyé avec succès !", { id: loadingToast });
         await supabase.from('policies').update({ notificationSent: true }).eq('id', policy.id);
       } else {
         throw new Error(data.error || "Erreur inconnue");
       }
     } catch (error: any) {
-      toast.error(error.message || "Erreur lors de l'envoi de l'email", { id: loadingToast });
+      toast.error(error.message || "Erreur lors de l'envoi du rappel", { id: loadingToast });
     }
   };
 
@@ -324,48 +315,37 @@ export default function App() {
   };
 
   useEffect(() => {
+    if (!isAuthenticated || !loginEmail || policies.length === 0) return;
+
     const checkAndSendReminders = async () => {
-      let updated = false;
-      const newPolicies = [...policies];
-      
-      for (let i = 0; i < newPolicies.length; i++) {
-        const p = newPolicies[i];
-        const endDate = parseISO(p.endDate);
-        const daysRemaining = differenceInDays(endDate, startOfDay(new Date()));
+      for (const p of policies) {
+        const daysRemaining = differenceInDays(parseISO(p.endDate), startOfDay(new Date()));
         const reminderThreshold = p.reminderDays ?? 7;
-        
-        if (daysRemaining >= 0 && daysRemaining <= reminderThreshold && !p.notificationSent && p.clientEmail) {
+
+        if (daysRemaining >= 0 && daysRemaining <= reminderThreshold && !p.notificationSent) {
           try {
             const response = await fetch('/api/send-reminder', {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
-                to: p.clientEmail,
-                subject: `Rappel : Expiration de l'assurance pour ${p.carBrand} ${p.carModel}`,
-                text: `Bonjour ${p.ownerName},\n\nCeci est un rappel automatique. L'assurance de votre véhicule ${p.carBrand} ${p.carModel} (Plaque: ${p.licensePlate}) expire le ${format(parseISO(p.endDate), 'dd/MM/yyyy')}.\n\nMerci de faire le nécessaire pour la renouveler.\n\nCordialement,\nMissCarr`,
-                userEmail: loginEmail,
-                userPassword: loginPassword
+                to: loginEmail,
+                subject: `[MissCarr] Rappel : Le contrat de ${p.ownerName} expire dans ${daysRemaining} jour(s)`,
+                text: `Bonjour,\n\nCeci est un rappel automatique de MissCarr.\n\nLe contrat d'assurance suivant expire dans ${daysRemaining} jour(s) :\n\n- Client : ${p.ownerName}\n- Véhicule : ${p.carBrand} ${p.carModel}\n- Plaque : ${p.licensePlate}\n- Date d'expiration : ${format(parseISO(p.endDate), 'dd/MM/yyyy')}\n${p.clientEmail ? `- Email du client : ${p.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMissCarr`
               })
             });
             if (response.ok) {
-              newPolicies[i] = { ...p, notificationSent: true };
-              updated = true;
-              toast.success(`Rappel automatique envoyé à ${p.clientEmail}`);
+              await supabase.from('policies').update({ notificationSent: true }).eq('id', p.id);
+              toast.success(`Rappel envoyé : contrat de ${p.ownerName} expire bientôt`);
             }
           } catch (e) {
             console.error("Auto-reminder failed:", e);
           }
         }
       }
-      if (updated) {
-        setPolicies(newPolicies);
-      }
     };
-    
-    if (isAuthenticated && policies.length > 0) {
-      checkAndSendReminders();
-    }
-  }, [isAuthenticated]);
+
+    checkAndSendReminders();
+  }, [isAuthenticated, policies, loginEmail]);
 
   const confirmRenew = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -963,7 +943,7 @@ export default function App() {
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl font-display font-bold text-slate-900">Paramètres</h1>
-          <p className="text-slate-500 mt-1">Configurez vos préférences et vos identifiants.</p>
+          <p className="text-slate-500 mt-1">Configurez vos préférences.</p>
         </div>
       </div>
 
@@ -971,39 +951,22 @@ export default function App() {
         <div className="p-6">
           <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
             <Mail className="w-5 h-5 mr-2 text-indigo-600" />
-            Configuration de l'envoi d'emails
+            Rappels automatiques par email
           </h2>
-          <p className="text-sm text-slate-500 mb-6">
-            Pour envoyer des rappels automatiques, vous devez fournir un mot de passe d'application Google. 
-            Ce mot de passe est stocké localement sur votre appareil.
+          <p className="text-sm text-slate-500 mb-4">
+            Lorsqu'un contrat arrive à expiration (7 jours par défaut), un email de rappel est envoyé automatiquement à votre adresse <strong className="text-slate-700">{loginEmail}</strong>.
           </p>
-          
-          <div className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-slate-700 mb-1.5">Mot de passe d'application Google</label>
-              <div className="relative">
-                <Lock className="w-5 h-5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={loginPassword}
-                  onChange={(e) => {
-                    setLoginPassword(e.target.value);
-                    localStorage.setItem('misscarr_password', e.target.value);
-                  }}
-                  className="pl-11 pr-11 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 w-full transition-all text-sm"
-                  placeholder="Mot de passe d'application (16 caractères)"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
-                >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                </button>
+          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" />
+              <div className="text-sm text-indigo-800">
+                <p className="font-medium mb-1">Configuration serveur requise</p>
+                <p>Les identifiants Gmail pour l'envoi des emails sont configurés dans le fichier <code className="bg-indigo-100 px-1.5 py-0.5 rounded text-xs">.env.local</code> du serveur :</p>
+                <ul className="mt-2 space-y-1 text-xs">
+                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">GMAIL_USER</code> — votre adresse Gmail</li>
+                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">GMAIL_APP_PASSWORD</code> — mot de passe d'application Google</li>
+                </ul>
               </div>
-              <p className="text-xs text-slate-500 mt-2">
-                Allez dans votre compte Google &gt; Sécurité &gt; Validation en deux étapes &gt; Mots de passe des applications.
-              </p>
             </div>
           </div>
         </div>

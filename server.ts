@@ -15,13 +15,13 @@ async function startServer() {
   app.use(cors());
 
   app.post('/api/send-reminder', async (req, res) => {
-    const { to, subject, text, userEmail, userPassword } = req.body;
+    const { to, subject, text } = req.body;
 
-    const emailUser = userEmail || process.env.GMAIL_USER;
-    const emailPass = userPassword || process.env.GMAIL_APP_PASSWORD;
+    const emailUser = process.env.GMAIL_USER;
+    const emailPass = process.env.GMAIL_APP_PASSWORD;
 
     if (!emailUser || !emailPass) {
-      return res.status(500).json({ error: 'Configuration Gmail manquante. Veuillez utiliser un email et un mot de passe d\'application valides lors de la connexion.' });
+      return res.status(500).json({ error: 'Configuration Gmail manquante. Configurez GMAIL_USER et GMAIL_APP_PASSWORD dans le fichier .env.local' });
     }
 
     try {
@@ -34,7 +34,7 @@ async function startServer() {
       });
 
       await transporter.sendMail({
-        from: emailUser,
+        from: `MissCarr <${emailUser}>`,
         to,
         subject,
         text,
