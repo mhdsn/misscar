@@ -963,8 +963,8 @@ export default function App() {
                 <p className="font-medium mb-1">Configuration serveur requise</p>
                 <p>Les identifiants Gmail pour l'envoi des emails sont configurés dans le fichier <code className="bg-indigo-100 px-1.5 py-0.5 rounded text-xs">.env.local</code> du serveur :</p>
                 <ul className="mt-2 space-y-1 text-xs">
-                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">GMAIL_USER</code> — votre adresse Gmail</li>
-                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">GMAIL_APP_PASSWORD</code> — mot de passe d'application Google</li>
+                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">VITE_GMAIL_USER</code> — votre adresse Gmail</li>
+                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">VITE_GMAIL_APP_PASSWORD</code> — mot de passe d'application Google</li>
                 </ul>
               </div>
             </div>

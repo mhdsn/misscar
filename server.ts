@@ -17,11 +17,11 @@ async function startServer() {
   app.post('/api/send-reminder', async (req, res) => {
     const { to, subject, text } = req.body;
 
-    const emailUser = process.env.GMAIL_USER;
-    const emailPass = process.env.GMAIL_APP_PASSWORD;
+    const emailUser = process.env.VITE_GMAIL_USER;
+    const emailPass = process.env.VITE_GMAIL_APP_PASSWORD;
 
     if (!emailUser || !emailPass) {
-      return res.status(500).json({ error: 'Configuration Gmail manquante. Configurez GMAIL_USER et GMAIL_APP_PASSWORD dans le fichier .env.local' });
+      return res.status(500).json({ error: 'Configuration Gmail manquante. Configurez VITE_GMAIL_USER et VITE_GMAIL_APP_PASSWORD dans le fichier .env.local' });
     }
 
     try {
