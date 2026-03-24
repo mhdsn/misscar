@@ -247,8 +247,8 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           to: loginEmail,
-          subject: `[MissCarr] Rappel : Le contrat de ${policy.ownerName} expire ${daysLeft <= 0 ? "aujourd'hui" : `dans ${daysLeft} jour(s)`}`,
-          text: `Bonjour,\n\nCeci est un rappel automatique de MissCarr.\n\nLe contrat d'assurance suivant ${daysLeft <= 0 ? 'a expiré' : `expire dans ${daysLeft} jour(s)`} :\n\n- Client : ${policy.ownerName}\n- Véhicule : ${policy.carBrand} ${policy.carModel}\n- Plaque : ${policy.licensePlate}\n- Date d'expiration : ${format(parseISO(policy.endDate), 'dd/MM/yyyy')}\n${policy.clientEmail ? `- Email du client : ${policy.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMissCarr`
+          subject: `[Miss_Carr Assur] Rappel : Le contrat de ${policy.ownerName} expire ${daysLeft <= 0 ? "aujourd'hui" : `dans ${daysLeft} jour(s)`}`,
+          text: `Bonjour,\n\nCeci est un rappel automatique de Miss_Carr Assur.\n\nLe contrat d'assurance suivant ${daysLeft <= 0 ? 'a expiré' : `expire dans ${daysLeft} jour(s)`} :\n\n- Client : ${policy.ownerName}\n- Véhicule : ${policy.carBrand} ${policy.carModel}\n- Plaque : ${policy.licensePlate}\n- Date d'expiration : ${format(parseISO(policy.endDate), 'dd/MM/yyyy')}\n${policy.clientEmail ? `- Email du client : ${policy.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMiss_Carr Assur`
         })
       });
 
@@ -307,7 +307,7 @@ export default function App() {
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
     link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `contrats_misscarr_${format(new Date(), 'yyyy-MM-dd')}.csv`);
+    link.setAttribute("download", `contrats_miss_carr_assur_${format(new Date(), 'yyyy-MM-dd')}.csv`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -329,8 +329,8 @@ export default function App() {
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({
                 to: loginEmail,
-                subject: `[MissCarr] Rappel : Le contrat de ${p.ownerName} expire dans ${daysRemaining} jour(s)`,
-                text: `Bonjour,\n\nCeci est un rappel automatique de MissCarr.\n\nLe contrat d'assurance suivant expire dans ${daysRemaining} jour(s) :\n\n- Client : ${p.ownerName}\n- Véhicule : ${p.carBrand} ${p.carModel}\n- Plaque : ${p.licensePlate}\n- Date d'expiration : ${format(parseISO(p.endDate), 'dd/MM/yyyy')}\n${p.clientEmail ? `- Email du client : ${p.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMissCarr`
+                subject: `[Miss_Carr Assur] Rappel : Le contrat de ${p.ownerName} expire dans ${daysRemaining} jour(s)`,
+                text: `Bonjour,\n\nCeci est un rappel automatique de Miss_Carr Assur.\n\nLe contrat d'assurance suivant expire dans ${daysRemaining} jour(s) :\n\n- Client : ${p.ownerName}\n- Véhicule : ${p.carBrand} ${p.carModel}\n- Plaque : ${p.licensePlate}\n- Date d'expiration : ${format(parseISO(p.endDate), 'dd/MM/yyyy')}\n${p.clientEmail ? `- Email du client : ${p.clientEmail}\n` : ''}\nMerci de prendre les dispositions nécessaires pour le renouvellement.\n\nCordialement,\nMiss_Carr Assur`
               })
             });
             if (response.ok) {
@@ -845,7 +845,7 @@ export default function App() {
                   value={formData.ownerName}
                   onChange={handleInputChange}
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
-                  placeholder="Ex: Miss Carrr"
+                  placeholder="Ex: Miss_Carr Assur"
                 />
               </div>
               <div>
@@ -1069,7 +1069,7 @@ export default function App() {
             <div className="inline-flex bg-indigo-600 p-3.5 rounded-2xl shadow-lg shadow-indigo-600/30 mb-5">
               <ShieldCheck className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-3xl font-display font-bold text-slate-900 tracking-tight">MissCarr</h1>
+            <h1 className="text-3xl font-display font-bold text-slate-900 tracking-tight">Miss_Carr Assur</h1>
             <p className="text-slate-500 mt-2 text-sm">
               {authMode === 'login' ? 'Connectez-vous pour accéder à votre espace personnel.' : 'Créez votre compte pour commencer.'}
             </p>
@@ -1452,7 +1452,7 @@ export default function App() {
             <div className="bg-indigo-600 p-2.5 rounded-xl shadow-sm shadow-indigo-600/20">
               <ShieldCheck className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-display font-bold text-slate-900 tracking-tight">MissCarr</span>
+            <span className="text-xl font-display font-bold text-slate-900 tracking-tight">Miss_Carr Assur</span>
           </div>
           <button 
             onClick={() => setIsMobileMenuOpen(false)}
@@ -1515,7 +1515,7 @@ export default function App() {
             <div className="bg-indigo-600 p-1.5 rounded-lg">
               <ShieldCheck className="w-5 h-5 text-white" />
             </div>
-            <span className="font-display font-bold text-slate-900">MissCarr</span>
+            <span className="font-display font-bold text-slate-900">Miss_Carr Assur</span>
           </div>
           <div className="flex items-center gap-2">
             <button 

@@ -34,7 +34,7 @@ async function startServer() {
       });
 
       await transporter.sendMail({
-        from: `MissCarr <${emailUser}>`,
+        from: `Miss_Carr Assur <${emailUser}>`,
         to,
         subject,
         text,

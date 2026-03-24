@@ -13,7 +13,7 @@ export const generateInvoice = (policy: any) => {
   // Header
   doc.setFontSize(24);
   doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
-  doc.text('MissCarr', 14, 22);
+  doc.text('Miss_Carr Assur', 14, 22);
   
   doc.setFontSize(10);
   doc.setTextColor(100, 116, 139); // Slate 500
@@ -75,5 +75,5 @@ export const generateInvoice = (policy: any) => {
   doc.text('Ce document sert de justificatif de souscription à votre contrat d\'assurance.', 14, pageHeight - 15);
   
   // Save the PDF
-  doc.save(`Facture_MissCarr_${policy.licensePlate}_${format(new Date(), 'yyyyMMdd')}.pdf`);
+  doc.save(`Facture_Miss_Carr_Assur_${policy.licensePlate}_${format(new Date(), 'yyyyMMdd')}.pdf`);
 };

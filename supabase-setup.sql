@@ -1,5 +1,5 @@
 -- ============================================
--- MissCarr - Script SQL pour Supabase
+-- Miss_Carr Assur - Script SQL pour Supabase
 -- Coller dans : SQL Editor > New Query > Run
 -- ============================================
 

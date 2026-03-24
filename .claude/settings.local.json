@@ -5,7 +5,9 @@
       "Bash(npx tsc:*)",
       "Bash(sed 's/className=\"\"\"\"//g')",
       "Bash(sed 's/\"\"\"\"$//g')",
-      "Bash(npx vite:*)"
+      "Bash(npx vite:*)",
+      "Bash(grep -r \"misscarr\\\\|MissCarr\" 'C:\\\\Users\\\\MHD SN\\\\Documents\\\\projetPerso\\\\missCar' --include=*.tsx --include=*.ts --include=*.jsx --include=*.js --include=*.html --include=*.json)",
+      "Bash(grep:*)"
     ]
   }
 }
