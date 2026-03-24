@@ -6,6 +6,7 @@ export interface InsurancePolicy {
   licensePlate: string;
   startDate: string;
   endDate: string;
+  amount?: number;
   reminderDays?: number;
   clientEmail?: string;
   notificationSent?: boolean;

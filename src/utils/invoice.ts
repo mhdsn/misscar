@@ -58,9 +58,9 @@ export const generateInvoice = (policy: any) => {
   
   autoTable(doc, {
     startY: 139,
-    head: [['Description', 'Date de début', 'Date de fin']],
+    head: [['Description', 'Date de début', 'Date de fin', 'Montant']],
     body: [
-      ['Assurance Automobile', startDate, endDate],
+      ['Assurance Automobile', startDate, endDate, `${(policy.amount ?? 0).toLocaleString('fr-FR')} DA`],
     ],
     theme: 'striped',
     headStyles: { fillColor: primaryColor as [number, number, number] },

@@ -7,7 +7,7 @@ import {
   ShieldAlert, ShieldCheck, Clock, LayoutDashboard, List,
   User, FileText, AlertCircle, CheckCircle2, Menu, X,
   ArrowRight, RefreshCw, Filter, Download, LogOut,
-  Mail, Lock, Eye, EyeOff, Send, Settings
+  Mail, Lock, Eye, EyeOff, Send, Settings, CreditCard
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster, toast } from 'sonner';
@@ -50,6 +50,7 @@ export default function App() {
     licensePlate: '',
     startDate: '',
     endDate: '',
+    amount: 0,
     reminderDays: 7
   });
 
@@ -171,6 +172,7 @@ export default function App() {
     const newPolicy: InsurancePolicy = {
       id: uuidv4(),
       ...formData,
+      amount: Number(formData.amount),
       reminderDays: Number(formData.reminderDays),
       createdAt: Date.now(),
       userId: userId
@@ -187,6 +189,7 @@ export default function App() {
         licensePlate: '',
         startDate: '',
         endDate: '',
+        amount: 0,
         reminderDays: 7
       });
       toast.success('Assurance enregistrée avec succès', {
@@ -279,6 +282,7 @@ export default function App() {
       "Plaque d'immatriculation",
       "Date de début",
       "Date de fin",
+      "Montant (DA)",
       "Jours restants",
       "Statut",
       "Rappel envoyé"
@@ -296,6 +300,7 @@ export default function App() {
           `"${p.licensePlate.replace(/"/g, '""')}"`,
           p.startDate,
           p.endDate,
+          p.amount ?? 0,
           p.daysRemaining,
           p.status,
           p.notificationSent ? 'Oui' : 'Non'
@@ -719,6 +724,9 @@ export default function App() {
                     <ArrowRight className="w-3.5 h-3.5 mr-1 text-slate-400" />
                     {format(parseISO(policy.endDate), 'dd/MM/yyyy')}
                   </span>
+                  <span className="flex items-center font-semibold text-slate-700">
+                    {(policy.amount ?? 0).toLocaleString('fr-FR')} DA
+                  </span>
                 </div>
               </div>
             ))}
@@ -734,6 +742,7 @@ export default function App() {
                   <th className="px-6 py-4 font-semibold">Client</th>
                   <th className="px-6 py-4 font-semibold">Véhicule</th>
                   <th className="px-6 py-4 font-semibold">Période</th>
+                  <th className="px-6 py-4 font-semibold">Montant</th>
                   <th className="px-6 py-4 font-semibold">Statut</th>
                   <th className="px-6 py-4 font-semibold text-right">Actions</th>
                 </tr>
@@ -770,6 +779,9 @@ export default function App() {
                         <ArrowRight className="w-4 h-4 mr-2 text-slate-400" />
                         {format(parseISO(policy.endDate), 'dd/MM/yyyy')}
                       </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-slate-900 font-semibold">{(policy.amount ?? 0).toLocaleString('fr-FR')} DA</span>
                     </td>
                     <td className="px-6 py-4">
                       {policy.status === 'active' && (
@@ -957,6 +969,34 @@ export default function App() {
                   value={formData.endDate}
                   onChange={handleInputChange}
                   min={formData.startDate}
+                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
+                />
+              </div>
+            </div>
+          </div>
+
+          <hr className="border-slate-100" />
+
+          {/* Section Montant */}
+          <div>
+            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4 flex items-center">
+              <CreditCard className="w-4 h-4 mr-2 text-indigo-500" />
+              Montant de l'Assurance
+            </h3>
+            <div className="grid grid-cols-1 gap-4">
+              <div>
+                <label htmlFor="amount" className="block text-sm font-medium text-slate-700 mb-1.5">
+                  Montant (DA)
+                </label>
+                <input
+                  type="number"
+                  id="amount"
+                  name="amount"
+                  min="0"
+                  step="0.01"
+                  value={formData.amount}
+                  onChange={handleInputChange}
+                  placeholder="Ex: 25000"
                   className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
                 />
               </div>
@@ -1375,6 +1415,10 @@ export default function App() {
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                  <div>
+                    <h4 className="text-sm font-medium text-slate-500 mb-1">Montant</h4>
+                    <p className="text-slate-900 font-semibold text-lg">{(viewModal.policy.amount ?? 0).toLocaleString('fr-FR')} DA</p>
+                  </div>
                   <div>
                     <h4 className="text-sm font-medium text-slate-500 mb-1">Préférence de rappel</h4>
                     <p className="text-slate-900 font-medium">{viewModal.policy.reminderDays ?? 7} jours avant expiration</p>

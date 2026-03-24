@@ -57,6 +57,7 @@ create table if not exists public.policies (
   "licensePlate" text not null,
   "startDate" text not null,
   "endDate" text not null,
+  "amount" numeric default 0,
   "reminderDays" integer default 7,
   "clientEmail" text,
   "notificationSent" boolean default false,
