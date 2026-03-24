@@ -1394,23 +1394,6 @@ export default function App() {
                 </div>
               </div>
               <div className="bg-slate-50 px-4 sm:px-6 py-4 flex flex-wrap justify-end gap-2 sm:gap-3 border-t border-slate-100">
-                {viewModal.policy.clientEmail && (
-                  <button
-                    onClick={() => handleSendReminder(viewModal.policy!)}
-                    disabled={viewModal.policy.notificationSent}
-                    className={`px-3 sm:px-4 py-2 text-sm font-medium rounded-xl transition-colors flex items-center gap-1.5 ${
-                      viewModal.policy.notificationSent
-                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                        : 'bg-amber-50 text-amber-600 hover:bg-amber-100 border border-amber-200'
-                    }`}
-                    title={viewModal.policy.notificationSent ? "Rappel déjà envoyé" : "Envoyer un rappel par email"}
-                  >
-                    <Send className="w-4 h-4" />
-                    <span className="hidden sm:inline">
-                      {viewModal.policy.notificationSent ? "Envoyé" : "Rappel"}
-                    </span>
-                  </button>
-                )}
                 <button
                   onClick={() => generateInvoice(viewModal.policy)}
                   className="px-3 sm:px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-200 bg-white border border-slate-200 rounded-xl transition-colors flex items-center"
