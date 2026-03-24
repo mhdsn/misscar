@@ -7,7 +7,7 @@ import {
   ShieldAlert, ShieldCheck, Clock, LayoutDashboard, List,
   User, FileText, AlertCircle, CheckCircle2, Menu, X,
   ArrowRight, RefreshCw, Filter, Download, LogOut,
-  Mail, Lock, Eye, EyeOff, Send, Settings, CreditCard, Banknote
+  Mail, Lock, Eye, EyeOff, Send, CreditCard, Banknote
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster, toast } from 'sonner';
@@ -32,7 +32,7 @@ export default function App() {
 
   const [policies, setPolicies] = useState<InsurancePolicy[]>([]);
 
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'list' | 'add' | 'settings'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'list' | 'add'>('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'expiring' | 'expired'>('all');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1057,47 +1057,10 @@ export default function App() {
     </div>
   );
 
-  const renderSettings = () => (
-    <div className="space-y-8">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900">Paramètres</h1>
-          <p className="text-slate-500 mt-1 text-sm sm:text-base">Configurez vos préférences.</p>
-        </div>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden max-w-2xl">
-        <div className="p-6">
-          <h2 className="text-lg font-semibold text-slate-900 mb-4 flex items-center">
-            <Mail className="w-5 h-5 mr-2 text-indigo-600" />
-            Rappels automatiques par email
-          </h2>
-          <p className="text-sm text-slate-500 mb-4">
-            Lorsqu'un contrat arrive à expiration (7 jours par défaut), un email de rappel est envoyé automatiquement à votre adresse <strong className="text-slate-700">{loginEmail}</strong>.
-          </p>
-          <div className="bg-indigo-50 border border-indigo-100 rounded-xl p-4">
-            <div className="flex items-start gap-3">
-              <AlertCircle className="w-5 h-5 text-indigo-600 mt-0.5 shrink-0" />
-              <div className="text-sm text-indigo-800">
-                <p className="font-medium mb-1">Configuration serveur requise</p>
-                <p>Les identifiants Gmail pour l'envoi des emails sont configurés dans le fichier <code className="bg-indigo-100 px-1.5 py-0.5 rounded text-xs">.env.local</code> du serveur :</p>
-                <ul className="mt-2 space-y-1 text-xs">
-                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">VITE_GMAIL_USER</code> — votre adresse Gmail</li>
-                  <li><code className="bg-indigo-100 px-1.5 py-0.5 rounded">VITE_GMAIL_APP_PASSWORD</code> — mot de passe d'application Google</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-
   const navItems = [
     { id: 'dashboard', label: 'Tableau de bord', icon: LayoutDashboard },
     { id: 'list', label: 'Liste des contrats', icon: List },
     { id: 'add', label: 'Nouvelle assurance', icon: Plus },
-    { id: 'settings', label: 'Paramètres', icon: Settings },
   ] as const;
 
   if (!isAuthenticated) {
@@ -1596,7 +1559,6 @@ export default function App() {
               {activeTab === 'dashboard' && renderDashboard()}
               {activeTab === 'list' && renderList()}
               {activeTab === 'add' && renderAddForm()}
-              {activeTab === 'settings' && renderSettings()}
             </motion.div>
           </AnimatePresence>
         </main>
