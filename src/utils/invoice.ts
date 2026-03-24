@@ -60,7 +60,7 @@ export const generateInvoice = (policy: any) => {
     startY: 139,
     head: [['Description', 'Date de début', 'Date de fin', 'Montant']],
     body: [
-      ['Assurance Automobile', startDate, endDate, `${(policy.amount ?? 0).toLocaleString('fr-FR')} DA`],
+      ['Assurance Automobile', startDate, endDate, `${(policy.amount ?? 0).toLocaleString('fr-FR')} FCFA`],
     ],
     theme: 'striped',
     headStyles: { fillColor: primaryColor as [number, number, number] },

@@ -7,7 +7,7 @@ import {
   ShieldAlert, ShieldCheck, Clock, LayoutDashboard, List,
   User, FileText, AlertCircle, CheckCircle2, Menu, X,
   ArrowRight, RefreshCw, Filter, Download, LogOut,
-  Mail, Lock, Eye, EyeOff, Send, Settings, CreditCard
+  Mail, Lock, Eye, EyeOff, Send, Settings, CreditCard, Banknote
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Toaster, toast } from 'sonner';
@@ -282,7 +282,7 @@ export default function App() {
       "Plaque d'immatriculation",
       "Date de début",
       "Date de fin",
-      "Montant (DA)",
+      "Montant (FCFA)",
       "Jours restants",
       "Statut",
       "Rappel envoyé"
@@ -428,6 +428,7 @@ export default function App() {
     active: enrichedPolicies.filter(p => p.status === 'active').length,
     expiring: enrichedPolicies.filter(p => p.status === 'expiring').length,
     expired: enrichedPolicies.filter(p => p.status === 'expired').length,
+    revenue: policies.reduce((sum, p) => sum + (p.amount ?? 0), 0),
   };
 
   const getInitials = (name: string) => {
@@ -459,7 +460,7 @@ export default function App() {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="p-2.5 sm:p-3 rounded-xl bg-indigo-50 text-indigo-600">
@@ -469,7 +470,7 @@ export default function App() {
           <p className="text-xs sm:text-sm font-medium text-slate-500 mb-1">Total Assurances</p>
           <p className="text-2xl sm:text-3xl font-display font-bold text-slate-900">{stats.total}</p>
         </div>
-        
+
         <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col">
           <div className="flex items-center justify-between mb-3 sm:mb-4">
             <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-50 text-emerald-600">
@@ -498,6 +499,16 @@ export default function App() {
           </div>
           <p className="text-xs sm:text-sm font-medium text-slate-500 mb-1">Expirées</p>
           <p className="text-2xl sm:text-3xl font-display font-bold text-slate-900">{stats.expired}</p>
+        </div>
+
+        <div className="col-span-2 sm:col-span-2 md:col-span-3 lg:col-span-1 bg-gradient-to-br from-indigo-600 to-indigo-700 p-4 sm:p-6 rounded-2xl shadow-sm flex flex-col text-white">
+          <div className="flex items-center justify-between mb-3 sm:mb-4">
+            <div className="p-2.5 sm:p-3 rounded-xl bg-white/20">
+              <Banknote className="w-6 h-6" />
+            </div>
+          </div>
+          <p className="text-xs sm:text-sm font-medium text-indigo-100 mb-1">Chiffre d'affaires</p>
+          <p className="text-2xl sm:text-3xl font-display font-bold">{stats.revenue.toLocaleString('fr-FR')} FCFA</p>
         </div>
       </div>
 
@@ -725,7 +736,7 @@ export default function App() {
                     {format(parseISO(policy.endDate), 'dd/MM/yyyy')}
                   </span>
                   <span className="flex items-center font-semibold text-slate-700">
-                    {(policy.amount ?? 0).toLocaleString('fr-FR')} DA
+                    {(policy.amount ?? 0).toLocaleString('fr-FR')} FCFA
                   </span>
                 </div>
               </div>
@@ -781,7 +792,7 @@ export default function App() {
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-slate-900 font-semibold">{(policy.amount ?? 0).toLocaleString('fr-FR')} DA</span>
+                      <span className="text-slate-900 font-semibold">{(policy.amount ?? 0).toLocaleString('fr-FR')} FCFA</span>
                     </td>
                     <td className="px-6 py-4">
                       {policy.status === 'active' && (
@@ -986,7 +997,7 @@ export default function App() {
             <div className="grid grid-cols-1 gap-4">
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Montant (DA)
+                  Montant (FCFA)
                 </label>
                 <input
                   type="number"
@@ -1417,7 +1428,7 @@ export default function App() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                   <div>
                     <h4 className="text-sm font-medium text-slate-500 mb-1">Montant</h4>
-                    <p className="text-slate-900 font-semibold text-lg">{(viewModal.policy.amount ?? 0).toLocaleString('fr-FR')} DA</p>
+                    <p className="text-slate-900 font-semibold text-lg">{(viewModal.policy.amount ?? 0).toLocaleString('fr-FR')} FCFA</p>
                   </div>
                   <div>
                     <h4 className="text-sm font-medium text-slate-500 mb-1">Préférence de rappel</h4>
