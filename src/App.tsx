@@ -896,7 +896,7 @@ export default function App() {
               <Car className="w-4 h-4 mr-2 text-indigo-500" />
               Détails du Véhicule
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
                 <label htmlFor="carBrand" className="block text-sm font-medium text-slate-700 mb-1.5">
                   Marque
@@ -927,9 +927,9 @@ export default function App() {
                   placeholder="Ex: Corolla"
                 />
               </div>
-              <div className="sm:col-span-2">
+              <div>
                 <label htmlFor="licensePlate" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Carte Grise (Immatriculation)
+                  Immatriculation
                 </label>
                 <input
                   type="text"
@@ -988,56 +988,50 @@ export default function App() {
 
           <hr className="border-slate-100" />
 
-          {/* Section Montant */}
+          {/* Section Montant & Rappel */}
           <div>
             <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4 flex items-center">
               <CreditCard className="w-4 h-4 mr-2 text-indigo-500" />
-              Montant de l'Assurance
+              Montant & Rappel
             </h3>
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="amount" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Montant (FCFA)
+                  Montant de la prime
                 </label>
-                <input
-                  type="number"
-                  id="amount"
-                  name="amount"
-                  min="0"
-                  step="0.01"
-                  value={formData.amount}
-                  onChange={handleInputChange}
-                  placeholder="Ex: 25000"
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    id="amount"
+                    name="amount"
+                    min="0"
+                    step="1"
+                    value={formData.amount || ''}
+                    onChange={handleInputChange}
+                    placeholder="Ex: 150 000"
+                    className="w-full pl-4 pr-16 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 pointer-events-none">FCFA</span>
+                </div>
               </div>
-            </div>
-          </div>
-
-          <hr className="border-slate-100" />
-
-          {/* Section Rappel */}
-          <div>
-            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wider mb-4 flex items-center">
-              <AlertCircle className="w-4 h-4 mr-2 text-indigo-500" />
-              Préférences de Rappel
-            </h3>
-            <div className="grid grid-cols-1 gap-4">
               <div>
                 <label htmlFor="reminderDays" className="block text-sm font-medium text-slate-700 mb-1.5">
-                  Me rappeler avant l'expiration (en jours)
+                  Rappel avant expiration
                 </label>
-                <input
-                  type="number"
-                  id="reminderDays"
-                  name="reminderDays"
-                  required
-                  min="1"
-                  max="365"
-                  value={formData.reminderDays}
-                  onChange={handleInputChange}
-                  className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
-                />
+                <div className="relative">
+                  <input
+                    type="number"
+                    id="reminderDays"
+                    name="reminderDays"
+                    required
+                    min="1"
+                    max="365"
+                    value={formData.reminderDays}
+                    onChange={handleInputChange}
+                    className="w-full pl-4 pr-14 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:bg-white focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 outline-none transition-all sm:text-sm"
+                  />
+                  <span className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 pointer-events-none">jours</span>
+                </div>
               </div>
             </div>
           </div>

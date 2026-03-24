@@ -3,9 +3,16 @@ import autoTable from 'jspdf-autotable';
 import { format, parseISO } from 'date-fns';
 import { fr } from 'date-fns/locale';
 
+const formatAmount = (value: number): string => {
+  return new Intl.NumberFormat('fr-FR', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  }).format(value);
+};
+
 export const generateInvoice = (policy: any) => {
   const doc = new jsPDF();
-  
+
   // Colors
   const primaryColor = [79, 70, 229]; // Indigo 600
   const textColor = [51, 65, 85]; // Slate 700
@@ -56,17 +63,31 @@ export const generateInvoice = (policy: any) => {
   const startDate = format(parseISO(policy.startDate), 'dd MMMM yyyy', { locale: fr });
   const endDate = format(parseISO(policy.endDate), 'dd MMMM yyyy', { locale: fr });
   
+  const formattedAmount = `${formatAmount(policy.amount ?? 0)} FCFA`;
+
   autoTable(doc, {
     startY: 139,
     head: [['Description', 'Date de début', 'Date de fin', 'Montant']],
     body: [
-      ['Assurance Automobile', startDate, endDate, `${(policy.amount ?? 0).toLocaleString('fr-FR')} FCFA`],
+      ['Assurance Automobile', startDate, endDate, formattedAmount],
     ],
     theme: 'striped',
     headStyles: { fillColor: primaryColor as [number, number, number] },
     styles: { font: 'helvetica', fontSize: 10 },
+    columnStyles: {
+      3: { halign: 'right', fontStyle: 'bold' },
+    },
   });
-  
+
+  // Total
+  const finalY = (doc as any).lastAutoTable.finalY + 8;
+  doc.setFontSize(12);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(textColor[0], textColor[1], textColor[2]);
+  doc.text('Total :', 140, finalY);
+  doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
+  doc.text(formattedAmount, 196, finalY, { align: 'right' });
+
   // Footer
   const pageHeight = doc.internal.pageSize.height;
   doc.setFontSize(9);
